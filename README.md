@@ -6,7 +6,7 @@ Important: Hytale Dedicated Server binaries are not included. You must supply th
 
 ## Quickstart
 
-1) Build the image:
+1) Build the image (optional):
 
 ```bash
 ./hsm.sh build
@@ -30,6 +30,8 @@ Optional: install local dependencies (Debian/Ubuntu):
 ./hsm.sh manager start <instance>
 ```
 
+If the Docker image isn’t present locally, the manager will build it automatically before starting the instance.
+
 Default server port is 5520 unless you override `HOST_PORT` in the instance `.env`.
 Instance names are used as the default service name (`HT_SERVICE_NAME`). Set `HT_CONTAINER_NAME` if you need a specific container name override.
 
@@ -48,7 +50,7 @@ Use the project CLI to manage instances from the repo root:
 ./hsm.sh manager update <instance> [--no-backup]
 ./hsm.sh manager backup <instance>
 ./hsm.sh manager remove <instance> [--yes]
-./hsm.sh manager status   # includes last auth + expected expiry (if available)
+./hsm.sh manager status
 ```
 
 Windows PowerShell wrapper:
@@ -119,6 +121,7 @@ Docs:
 - The helper scripts can use the official Hytale Downloader utility to fetch/update server files. See `docs/quickstart.md`.
 - Helper scripts will check for required CLI tools and can auto-install on Debian/Ubuntu with `HT_AUTO_INSTALL_DEPS=1`.
 - The Docker image includes Adoptium Temurin Java for running the server.
+- Default Java memory is set via `JAVA_TOOL_OPTIONS=-Xms10G -Xmx10G` inside the container. Override with `HT_JAVA_OPTS`.
 - Container console access for `/auth` requires `stdin_open: true` (now in the template). See `docs/quickstart.md`.
 - Each instance needs its own `/auth login device` flow; the manager handles this automatically.
 - Automatic device-auth in the CLI manager requires `expect` on Linux.

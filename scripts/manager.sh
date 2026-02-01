@@ -50,6 +50,23 @@ need_compose() {
   fi
 }
 
+ensure_image() {
+  local instance_dir=$1
+  local env_file="$instance_dir/.env"
+  local image="hytale-dedicated:latest"
+  if [[ -f "$env_file" ]]; then
+    image=$(grep -E '^HT_IMAGE=' "$env_file" | cut -d= -f2- | tr -d '\r')
+  fi
+  if [[ -z "$image" ]]; then
+    image="hytale-dedicated:latest"
+  fi
+  if docker image inspect "$image" >/dev/null 2>&1; then
+    return 0
+  fi
+  echo "Docker image '$image' not found. Building..."
+  IMAGE_NAME="$image" "$ROOT_DIR/scripts/build.sh"
+}
+
 service_name() {
   local instance_dir=$1
   local env_file="$instance_dir/.env"
@@ -336,6 +353,7 @@ case "$cmd" in
   start)
     instance_dir=$(resolve_instance "${1:-}")
     need_compose "$instance_dir"
+    ensure_image "$instance_dir"
     ensure_server_cmd "$instance_dir"
     apply_export_tokens "$instance_dir"
     run_compose_quiet "$instance_dir/docker-compose.yml" up -d
@@ -410,58 +428,23 @@ case "$cmd" in
       echo "No instances directory found."
       exit 0
     fi
-    printf "%-30s %-20s %-20s %-10s %-10s %-20s %-20s\n" "INSTANCE" "SERVICE" "CONTAINER" "STATUS" "PORT" "AUTH_AT" "AUTH_EXPIRES"
+    printf "%-30s %-20s %-20s %-10s %-10s\n" "INSTANCE" "SERVICE" "CONTAINER" "STATUS" "PORT"
     for dir in "$INSTANCES_DIR"/*; do
       [[ -d "$dir" ]] || continue
       env_file="$dir/.env"
-      tokens_file="$dir/.auth/tokens.json"
       instance_name=$(basename "$dir")
       service_name_value=$(service_name "$dir")
       container_name=$(container_id "$dir")
       host_port=""
-      auth_at="-"
-      auth_expires="-"
       if [[ -f "$env_file" ]]; then
         container_name=$(grep -E '^HT_CONTAINER_NAME=' "$env_file" | cut -d= -f2- | tr -d '\r')
         host_port=$(grep -E '^HOST_PORT=' "$env_file" | cut -d= -f2- | tr -d '\r')
-      fi
-      if [[ -f "$tokens_file" ]]; then
-        auth_at=$(python3 - <<'PY' "$tokens_file" 2>/dev/null || echo "-"
-import json, sys, datetime
-path = sys.argv[1]
-with open(path, "r", encoding="utf-8") as handle:
-    data = json.load(handle)
-token = data.get("access_token")
-payload = data
-created = data.get("created_at")
-expires_in = data.get("expires_in")
-if not created:
-    try:
-        import os
-        ts = os.path.getmtime(path)
-        created = datetime.datetime.utcfromtimestamp(ts).isoformat() + "Z"
-    except Exception:
-        created = "-"
-if expires_in:
-    try:
-        dt = datetime.datetime.fromisoformat(created.replace("Z", "+00:00"))
-        exp = dt + datetime.timedelta(seconds=int(expires_in))
-        expires = exp.isoformat()
-    except Exception:
-        expires = "-"
-else:
-    expires = "-"
-print(f"{created}|{expires}")
-PY
-)
-        auth_expires=${auth_at#*|}
-        auth_at=${auth_at%%|*}
       fi
       status="not found"
       if [[ -n "$container_name" ]]; then
         status=$(docker inspect -f '{{.State.Status}}' "$container_name" 2>/dev/null || echo "not found")
       fi
-      printf "%-30s %-20s %-20s %-10s %-10s %-20s %-20s\n" "$instance_name" "$service_name_value" "${container_name:-"-"}" "$status" "$host_port" "$auth_at" "$auth_expires"
+      printf "%-30s %-20s %-20s %-10s %-10s\n" "$instance_name" "$service_name_value" "${container_name:-"-"}" "$status" "$host_port"
     done
     ;;
   ""|help|-h|--help)

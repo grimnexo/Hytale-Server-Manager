@@ -19,8 +19,9 @@ You'll get the IP locally, but if you need network forwarding / DNS masking that
 
 (no-ip is great!)
 
-## Build the image
-This is not necessary for basic installs - it's related to the modding programs that are being developed alongside this.
+## Build the image (optional)
+This is not necessary for basic installs. The manager will auto-build the image the first time you start an instance if it is missing.
+Manual builds are mostly useful when you're editing the Dockerfile or developing the modding tools.
 
 When you need to build the docker image for the project, you can run:
 
@@ -65,6 +66,8 @@ instances/<instance-name>/.env
 Set `HT_SERVER_CMD` to whatever command you normally use to start the server.
 
 If `HT_SERVER_CMD` is empty, setup will try to auto-detect `./server/start.sh`, `./server/HytaleServer`, or `./server/HytaleServer.sh`.
+
+Java memory: by default the container sets `JAVA_TOOL_OPTIONS=-Xms10G -Xmx10G`. Override with `HT_JAVA_OPTS` in the instance `.env`.
 
 World name: `WORLD_NAME` is stored in the instance `.env` for now (used by tooling). If you want to apply it inside the server, set a custom `HT_SERVER_CMD` that passes the name to your server start script (if supported).
 
@@ -123,6 +126,8 @@ Reference:
 ./hsm.sh manager start <instance>
 ```
 
+If the Docker image isn’t present locally, the manager will build it automatically before starting the instance.
+
 You can also use the project CLI from the repo root:
 
 ```bash
@@ -134,7 +139,7 @@ You can also use the project CLI from the repo root:
 ./hsm.sh manager update <instance> [--no-backup]
 ./hsm.sh manager backup <instance>
 ./hsm.sh manager remove <instance> [--yes]
-./hsm.sh manager status   # includes last auth + expected expiry (if available)
+./hsm.sh manager status
 ```
 
 ## Authenticate the server (OAuth device login)

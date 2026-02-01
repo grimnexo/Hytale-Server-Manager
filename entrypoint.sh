@@ -3,6 +3,12 @@ set -euo pipefail
 
 mkdir -p /opt/hytale/mods /opt/hytale/data /opt/hytale/logs
 
+if [[ -n "${HT_JAVA_OPTS:-}" ]]; then
+  export JAVA_TOOL_OPTIONS="${JAVA_TOOL_OPTIONS:-} ${HT_JAVA_OPTS}"
+else
+  export JAVA_TOOL_OPTIONS="${JAVA_TOOL_OPTIONS:-} -Xms10G -Xmx10G"
+fi
+
 if [[ ! -d /opt/hytale/server ]]; then
   echo "Missing /opt/hytale/server (mount your server files)." >&2
   exit 1
