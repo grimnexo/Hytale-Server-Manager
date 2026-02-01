@@ -6,6 +6,14 @@ Important: Hytale Dedicated Server binaries are not included. You must supply th
 
 ## Quickstart
 
+Prereqs (first time):
+
+```text
+Docker Desktop: https://www.docker.com/products/docker-desktop/
+Repo: https://github.com/grimnexo/Hytale-Server-Manager
+Python (3.12.4 confirmed): https://www.python.org/downloads/
+```
+
 1) Build the image (optional):
 
 ```bash
@@ -31,6 +39,14 @@ Optional: install local dependencies (Debian/Ubuntu):
 ```
 
 If the Docker image isn’t present locally, the manager will build it automatically before starting the instance.
+
+Check status:
+
+```bash
+./hsm.sh manager status
+```
+
+Your server should now be running locally on the port you selected.
 
 Default server port is 5520 unless you override `HOST_PORT` in the instance `.env`.
 Instance names are used as the default service name (`HT_SERVICE_NAME`). Set `HT_CONTAINER_NAME` if you need a specific container name override.

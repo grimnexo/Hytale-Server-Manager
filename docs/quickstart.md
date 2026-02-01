@@ -5,6 +5,14 @@ Using the `./hsm.{sh|ps1} setup` command you can create a new instance.
 
 This will prompt you for some inputs to configure the instance, and if you need to do more you'll need to manually edit the instance files.
 
+Prereqs (first time):
+
+```text
+Docker Desktop: https://www.docker.com/products/docker-desktop/
+Repo: https://github.com/grimnexo/Hytale-Server-Manager
+Python (3.12.4 confirmed): https://www.python.org/downloads/
+```
+
 > NOTE: If you have *not* run the setup before, you'll need to authorize your actual machine for downloading the base Hytale server image. This is normal. You will get a `.hytale-downloader.credentials.json` file in the project root with an access token - this is for the downloader to pull images as needed, although it might need to be reauthorized (by deleting the file) if it expires and doesn't auto-renew.
 
 > You will *ALSO* need to authorize each instance, but a link is auto-generated and provided during setup for that as well (and instances are treated as their own machine, so you shouldn't need to reauth them often / if-ever - especially if they run non-stop).
