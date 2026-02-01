@@ -1,0 +1,18 @@
+services:
+  hytale:
+    image: ${HT_IMAGE}
+    container_name: ${HT_CONTAINER_NAME}
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - HT_SERVER_CMD=${HT_SERVER_CMD}
+    volumes:
+      - ./server:/opt/hytale/server
+      - ./mods:/opt/hytale/mods
+      - ./data:/opt/hytale/data
+      - ./logs:/opt/hytale/logs
+    ports:
+      - "${HOST_PORT}:${HOST_PORT}/tcp"
+      - "${HOST_PORT}:${HOST_PORT}/udp"
+    tty: true

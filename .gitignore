@@ -1,0 +1,5 @@
+# Local instances and server files
+instances/
+
+# Editor
+.vscode/
