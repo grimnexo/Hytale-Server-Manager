@@ -1,7 +1,6 @@
 services:
-  hytale:
+  __SERVICE_NAME__:
     image: ${HT_IMAGE}
-    container_name: ${HT_CONTAINER_NAME}
     restart: unless-stopped
     env_file:
       - .env
@@ -12,7 +11,9 @@ services:
       - ./mods:/opt/hytale/mods
       - ./data:/opt/hytale/data
       - ./logs:/opt/hytale/logs
+      - ./data/machine-id:/etc/machine-id:ro
     ports:
       - "${HOST_PORT}:${HOST_PORT}/tcp"
       - "${HOST_PORT}:${HOST_PORT}/udp"
     tty: true
+    stdin_open: true

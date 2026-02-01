@@ -1,0 +1,14 @@
+﻿{
+  "Name": "Example Pack",
+  "Description": "Minimal asset pack example",
+  "Version": "0.1.0",
+  "Group": "com.example.hytale",
+  "Authors": ["Example Author"],
+  "Website": "https://example.com",
+  "Dependencies": [],
+  "OptionalDependencies": [],
+  "LoadBefore": [],
+  "DisabledByDefault": false,
+  "IncludesAssetPack": true,
+  "SubPlugins": []
+}

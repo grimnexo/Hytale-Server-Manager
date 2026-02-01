@@ -1,5 +1,11 @@
 # Local instances and server files
 instances/
+tools/
+/.hytale-downloader-credentials.json
+backups/
+downloads/
+# Sensitive credentials for downloading the base server image
+.hytale-downloader-credentials.json
 
 # Editor
 .vscode/

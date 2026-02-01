@@ -1,0 +1,7 @@
+﻿{
+  "Id": "example:block_one",
+  "TranslationProperties": {
+    "Name": "items.example.block_one.name",
+    "Description": "items.example.block_one.description"
+  }
+}
